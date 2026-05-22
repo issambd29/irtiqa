@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "KxkunMdNcRGlG1zFuHlSh"
+uri = "file://alirtiqaa_project.zip"
+type = "unspecified"
+title = "الارتقاء — Full Django Project"

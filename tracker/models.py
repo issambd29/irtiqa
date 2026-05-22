@@ -97,7 +97,12 @@ class DailyProgress(models.Model):
     # Knowledge
     reading_minutes = models.IntegerField(default=0)
     books_pages = models.IntegerField(default=0)
+    book_name = models.CharField(max_length=200, blank=True, default='')
+    reading_notes = models.TextField(blank=True, default='')
     english_minutes = models.IntegerField(default=0)
+    english_words = models.IntegerField(default=0)
+    learned_something = models.BooleanField(default=False)
+    learning_notes = models.TextField(blank=True, default='')
 
     # Programming
     coding_minutes = models.IntegerField(default=0)

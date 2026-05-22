@@ -293,15 +293,15 @@ def api_update(request):
         bool_fields = [
             'fajr', 'dhuhr', 'asr', 'maghrib', 'isha',
             'morning_adhkar', 'evening_adhkar', 'workout_done', 'qiyam',
-            'matn_memorization',
+            'matn_memorization', 'learned_something',
         ]
         int_fields = [
             'quran_pages', 'water_glasses', 'books_pages', 'pomodoros_done',
             'reading_minutes', 'english_minutes', 'coding_minutes',
-            'istighfar_count', 'salawat_count',
+            'istighfar_count', 'salawat_count', 'english_words',
         ]
         float_fields = ['sleep_hours']
-        str_fields = ['workout_type']
+        str_fields = ['workout_type', 'book_name', 'reading_notes', 'learning_notes']
 
         if field in bool_fields:
             setattr(progress, field, bool(value))

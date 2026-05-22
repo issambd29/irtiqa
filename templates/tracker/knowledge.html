@@ -5,34 +5,52 @@
 <div class="page-header">
   <h1 class="label-ar">المعرفة</h1>
   <h1 class="label-en" style="display:none">Knowledge</h1>
-  <p class="text-muted label-ar">القراءة واللغة الإنجليزية</p>
-  <p class="text-muted label-en" style="display:none">Reading and English practice</p>
+  <p class="text-muted label-ar">القراءة واللغة والتعلم</p>
+  <p class="text-muted label-en" style="display:none">Reading, Language & Learning</p>
 </div>
 
 <div class="space-y">
 
-  <!-- ── Reading ── -->
+  <!-- ── Book Reading ── -->
   <div class="habit-card {% if progress.reading_minutes >= profile.reading_target %}completed{% endif %}">
     <div class="habit-card-header">
       <div class="habit-card-title">
         <div class="habit-card-icon">📚</div>
-        <span class="label-ar">القراءة اليومية</span>
-        <span class="label-en" style="display:none">Daily Reading</span>
+        <span class="label-ar">قراءة الكتب</span>
+        <span class="label-en" style="display:none">Book Reading</span>
       </div>
       <span class="habit-card-badge {% if progress.reading_minutes >= profile.reading_target %}done{% endif %}">
         <span id="reading-badge">{{ reading_pct }}%</span>
       </span>
     </div>
     <div class="habit-card-body">
+
+      <!-- Quick check -->
+      <div class="check-row mb-3" onclick="toggleCheck('learned_something', this)" style="display:none" id="book-quick-check">
+      </div>
+
+      <!-- Book name -->
+      <div style="margin-bottom:0.75rem;">
+        <div class="text-xs text-muted mb-1 label-ar">اسم الكتاب</div>
+        <div class="text-xs text-muted mb-1 label-en" style="display:none">Book Name</div>
+        <input type="text" class="knw-input" id="book-name-input" placeholder="اسم الكتاب..." value="{{ progress.book_name }}" oninput="saveBookName(this.value)" />
+      </div>
+
+      <!-- Pages counter -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.875rem;">
-        <div>
-          <div class="text-sm font-medium label-ar">دقائق القراءة</div>
-          <div class="text-sm font-medium label-en" style="display:none">Reading Minutes</div>
-          <div class="text-xs text-muted mt-1">
-            <span class="label-ar">الهدف: {{ profile.reading_target }} دقيقة · +40 XP</span>
-            <span class="label-en" style="display:none">Target: {{ profile.reading_target }} min · +40 XP</span>
-          </div>
+        <div class="text-sm font-medium label-ar">عدد الصفحات المقروءة</div>
+        <div class="text-sm font-medium label-en" style="display:none">Pages Read</div>
+        <div class="num-ctrl">
+          <button class="num-btn" onclick="changePages(-1)">−</button>
+          <span class="num-val" id="pages-val">{{ progress.books_pages }}</span>
+          <button class="num-btn plus" onclick="changePages(1)">+</button>
         </div>
+      </div>
+
+      <!-- Reading minutes progress -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <div class="text-xs text-muted label-ar">الهدف: {{ profile.reading_target }} دقيقة · +40 XP</div>
+        <div class="text-xs text-muted label-en" style="display:none">Target: {{ profile.reading_target }} min · +40 XP</div>
         <div class="num-ctrl">
           <button class="num-btn" onclick="changeReading(-5)">−5</button>
           <span class="num-val" id="reading-val">{{ progress.reading_minutes }}</span>
@@ -42,22 +60,31 @@
       <div class="progress-wrap progress-h2 mb-1">
         <div class="progress-bar prog-gold" id="reading-bar" style="width:{{ reading_pct }}%"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;" class="text-xs text-muted">
+      <div style="display:flex;justify-content:space-between;" class="text-xs text-muted mb-3">
         <span><span id="reading-val2">{{ progress.reading_minutes }}</span> / {{ profile.reading_target }} <span class="label-ar">دقيقة</span><span class="label-en" style="display:none">min</span></span>
-        <span class="text-accent">{{ reading_pct }}%</span>
+        <span class="text-accent" id="reading-pct-text">{{ reading_pct }}%</span>
       </div>
 
-      <div style="margin-top:1rem;">
-        <div class="text-xs text-muted mb-2">
-          <span class="label-ar">صفحات الكتاب المقروءة</span>
-          <span class="label-en" style="display:none">Book pages read</span>
-        </div>
-        <div class="num-ctrl">
-          <button class="num-btn" onclick="changePages(-1)">−</button>
-          <span class="num-val" id="pages-val">{{ progress.books_pages }}</span>
-          <button class="num-btn plus" onclick="changePages(1)">+</button>
+      <!-- Reading notes -->
+      <div style="margin-bottom:0.875rem;">
+        <div class="text-xs text-muted mb-1 label-ar">ملاحظات القراءة</div>
+        <div class="text-xs text-muted mb-1 label-en" style="display:none">Reading Notes</div>
+        <textarea class="knw-textarea" id="reading-notes" placeholder="ماذا تعلمت؟" oninput="saveReadingNotes(this.value)">{{ progress.reading_notes }}</textarea>
+      </div>
+
+      <!-- Reading timer -->
+      <div style="background:rgba(255,255,255,0.03);border-radius:0.75rem;padding:0.875rem;">
+        <div class="text-xs text-muted mb-2 label-ar">مؤقت القراءة</div>
+        <div class="text-xs text-muted mb-2 label-en" style="display:none">Reading Timer</div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button class="timer-btn" id="timer-start-btn" onclick="startTimer()">
+            <span id="timer-start-label">▶ Start</span>
+          </button>
+          <button class="timer-btn timer-btn-reset" onclick="resetTimer()">↺ Reset</button>
+          <span class="timer-display" id="timer-display">00:00</span>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -65,19 +92,21 @@
   <div class="habit-card {% if progress.english_minutes >= 20 %}completed{% endif %}">
     <div class="habit-card-header">
       <div class="habit-card-title">
-        <div class="habit-card-icon">🇬🇧</div>
-        <span class="label-ar">تعلم الإنجليزية</span>
-        <span class="label-en" style="display:none">English Practice</span>
+        <div class="habit-card-icon">🌐</div>
+        <span class="label-ar">قراءة اللغة الإنجليزية</span>
+        <span class="label-en" style="display:none">English Reading</span>
       </div>
       <span class="habit-card-badge {% if progress.english_minutes >= 20 %}done{% endif %}">
         <span id="english-badge">{{ english_pct }}%</span>
       </span>
     </div>
     <div class="habit-card-body">
+
+      <!-- English minutes -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.875rem;">
         <div>
-          <div class="text-sm font-medium label-ar">دقائق التدريب</div>
-          <div class="text-sm font-medium label-en" style="display:none">Practice Minutes</div>
+          <div class="text-sm font-medium label-ar">دقائق القراءة الإنجليزية</div>
+          <div class="text-sm font-medium label-en" style="display:none">English Reading Minutes</div>
           <div class="text-xs text-muted mt-1">
             <span class="label-ar">الهدف: 20 دقيقة · +25 XP</span>
             <span class="label-en" style="display:none">Target: 20 min · +25 XP</span>
@@ -93,8 +122,20 @@
         <div class="progress-bar prog-blue" id="english-bar" style="width:{{ english_pct }}%"></div>
       </div>
 
-      <div class="text-xs text-muted mb-2 label-ar">أضف نشاطاً سريعاً</div>
-      <div class="text-xs text-muted mb-2 label-en" style="display:none">Quick add activity</div>
+      <!-- Words learned -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <div class="text-sm font-medium label-ar">كلمات تعلمتها</div>
+        <div class="text-sm font-medium label-en" style="display:none">Words Learned</div>
+        <div class="num-ctrl">
+          <button class="num-btn" onclick="changeWords(-1)">−</button>
+          <span class="num-val" id="words-val">{{ progress.english_words|default:0 }}</span>
+          <button class="num-btn plus" onclick="changeWords(1)">+</button>
+        </div>
+      </div>
+
+      <!-- Quick activities -->
+      <div class="text-xs text-muted mb-2 mt-3 label-ar">أضف نشاطاً سريعاً</div>
+      <div class="text-xs text-muted mb-2 mt-3 label-en" style="display:none">Quick add activity</div>
       <div class="chip-group">
         {% for activity in english_activities %}
         <button class="chip" onclick="addEnglishActivity({{ activity.mins }}, this)">
@@ -102,6 +143,36 @@
           ({{ activity.mins }}<span class="label-ar">دق</span><span class="label-en" style="display:none">m</span>)
         </button>
         {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Learning ── -->
+  <div class="habit-card {% if progress.learned_something %}completed{% endif %}">
+    <div class="habit-card-header">
+      <div class="habit-card-title">
+        <div class="habit-card-icon">💡</div>
+        <span class="label-ar">التعلم</span>
+        <span class="label-en" style="display:none">Learning</span>
+      </div>
+      <span class="habit-card-badge {% if progress.learned_something %}done{% endif %}">
+        {% if progress.learned_something %}✓ <span class="label-ar">مكتمل</span><span class="label-en" style="display:none">Done</span>{% else %}+15 XP{% endif %}
+      </span>
+    </div>
+    <div class="habit-card-body">
+      <div class="check-row mb-3" onclick="toggleCheck('learned_something', this)">
+        <div class="check-box {% if progress.learned_something %}checked{% endif %}" id="chk-learned_something">{% if progress.learned_something %}✓{% endif %}</div>
+        <div style="flex:1">
+          <div class="check-label label-ar">تعلمت شيئاً جديداً اليوم؟</div>
+          <div class="check-label label-en" style="display:none">Learned something new today?</div>
+          <div class="check-sub">+15 XP</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="text-xs text-muted mb-1 label-ar">ملاحظات التعلم</div>
+        <div class="text-xs text-muted mb-1 label-en" style="display:none">Learning Notes</div>
+        <textarea class="knw-textarea" id="learning-notes" placeholder="ماذا تعلمت اليوم؟" oninput="saveLearningNotes(this.value)">{{ progress.learning_notes }}</textarea>
       </div>
     </div>
   </div>
@@ -114,7 +185,59 @@
 let readingVal = {{ progress.reading_minutes }};
 let pagesVal = {{ progress.books_pages }};
 let englishVal = {{ progress.english_minutes }};
+let wordsVal = {{ progress.english_words|default:0 }};
 const readingTarget = {{ profile.reading_target }};
+
+// ── Reading timer ──
+let timerRunning = false;
+let timerSeconds = 0;
+let timerInterval = null;
+
+function startTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-start-label').textContent = '▶ Start';
+    const mins = Math.floor(timerSeconds / 60);
+    if (mins > 0) {
+      readingVal = Math.max(0, readingVal + mins);
+      document.getElementById('reading-val').textContent = readingVal;
+      document.getElementById('reading-val2').textContent = readingVal;
+      const pct = Math.min(100, Math.round((readingVal / readingTarget) * 100));
+      document.getElementById('reading-bar').style.width = pct + '%';
+      document.getElementById('reading-badge').textContent = pct + '%';
+      document.getElementById('reading-pct-text').textContent = pct + '%';
+      apiUpdate('reading_minutes', readingVal);
+    }
+  } else {
+    timerRunning = true;
+    document.getElementById('timer-start-label').textContent = '⏸ Pause';
+    timerInterval = setInterval(() => {
+      timerSeconds++;
+      const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+      const s = String(timerSeconds % 60).padStart(2, '0');
+      document.getElementById('timer-display').textContent = m + ':' + s;
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 0;
+  document.getElementById('timer-display').textContent = '00:00';
+  document.getElementById('timer-start-label').textContent = '▶ Start';
+}
+
+// ── Debounce helper ──
+function debounce(fn, delay) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+}
+
+const saveBookName   = debounce(v => apiUpdate('book_name', v), 800);
+const saveReadingNotes = debounce(v => apiUpdate('reading_notes', v), 800);
+const saveLearningNotes = debounce(v => apiUpdate('learning_notes', v), 800);
 
 async function changeReading(delta) {
   readingVal = Math.max(0, readingVal + delta);
@@ -123,6 +246,7 @@ async function changeReading(delta) {
   const pct = Math.min(100, Math.round((readingVal / readingTarget) * 100));
   document.getElementById('reading-bar').style.width = pct + '%';
   document.getElementById('reading-badge').textContent = pct + '%';
+  document.getElementById('reading-pct-text').textContent = pct + '%';
   const res = await apiUpdate('reading_minutes', readingVal);
   if (res.ok && readingVal >= readingTarget) showXpPopup(40);
 }
@@ -143,6 +267,12 @@ async function changeEnglish(delta) {
   if (res.ok && englishVal >= 20) showXpPopup(25);
 }
 
+async function changeWords(delta) {
+  wordsVal = Math.max(0, wordsVal + delta);
+  document.getElementById('words-val').textContent = wordsVal;
+  await apiUpdate('english_words', wordsVal);
+}
+
 async function addEnglishActivity(mins, btn) {
   englishVal += parseInt(mins);
   document.getElementById('english-val').textContent = englishVal;
@@ -150,6 +280,16 @@ async function addEnglishActivity(mins, btn) {
   document.getElementById('english-bar').style.width = pct + '%';
   document.getElementById('english-badge').textContent = pct + '%';
   await apiUpdate('english_minutes', englishVal);
+}
+
+async function toggleCheck(field, row) {
+  const box = document.getElementById('chk-' + field);
+  const isDone = box.classList.contains('checked');
+  const res = await apiUpdate(field, !isDone);
+  if (res.ok) {
+    if (isDone) { box.classList.remove('checked'); box.textContent = ''; }
+    else        { box.classList.add('checked'); box.textContent = '✓'; showXpPopup(15); }
+  }
 }
 </script>
 {% endblock %}

@@ -1,0 +1,201 @@
+Create a modern self-improvement platform where the system adapts to the user instead of forcing a predefined lifestyle structure.
+
+The platform must not impose a rigid development path. Every person has different goals, interests, thinking styles, religious commitment levels, learning objectives, and life priorities.
+
+The philosophy of the platform should be:
+
+"The user builds his own life system."
+
+The website should contain two layers:
+
+1. Core Foundations (fixed essential pillars)
+2. Fully Customizable Personal System
+
+---
+
+## CORE FOUNDATIONS
+
+These are the non-removable essential life pillars.
+
+Each pillar contains default habits/tasks that can be edited, expanded, disabled, reordered, or personalized by the user.
+
+A) Physical Development
+Default examples:
+
+* Exercise / sport
+* Sleep tracking
+* Healthy food
+* Water intake
+* Body hygiene
+* Walking
+* Stretching
+
+The user can:
+
+* Add custom habits
+* Remove non-essential habits
+* Create subcategories
+* Change priorities
+* Change tracking systems
+* Add custom metrics
+
+B) Religious / Islamic Development
+Default examples:
+
+* 5 daily prayers
+* Quran reading
+* Quran memorization
+* Morning/evening adhkar
+* Learning Islamic knowledge
+* حفظ المتون
+* Friday reminders
+* Charity tracking
+
+Important:
+The religious section should respect Islamic structure while still allowing customization.
+
+The essential obligations remain visible as core guidance, but users can personalize:
+
+* study goals
+* memorization plans
+* daily targets
+* learning paths
+
+C) Mental / Intellectual Development
+Default examples:
+
+* Reading
+* Learning
+* Reflection / journaling
+* Critical thinking
+* Language learning
+* Focus sessions
+
+Users can create:
+
+* Custom learning systems
+* Book trackers
+* Deep work routines
+* Skill trees
+* Knowledge maps
+
+D) Programming / Career Development
+Default examples:
+
+* Coding hours
+* Learning technologies
+* Building projects
+* Open source contribution
+* Portfolio work
+* Problem solving
+
+Users can customize:
+
+* Technologies
+* Career tracks
+* Weekly roadmaps
+* Skill progression
+* Personal projects
+* Study plans
+
+---
+
+## CUSTOMIZATION SYSTEM
+
+The platform must provide powerful customization features.
+
+Users should be able to:
+
+* Add new sections
+* Delete sections
+* Rename sections
+* Create custom habits/tasks
+* Add custom trackers
+* Create categories/subcategories
+* Create their own goal systems
+* Change layouts
+* Drag and drop components
+* Create daily/weekly/monthly systems
+* Create custom statistics
+* Define their own priorities
+
+The UI/UX should make users feel:
+"This system belongs to me."
+
+---
+
+## SMART ADAPTIVE SYSTEM
+
+The platform should adapt to user behavior.
+
+Examples:
+
+* Suggest habits based on goals
+* Recommend routines
+* Detect inconsistency
+* Provide motivational insights
+* Adjust difficulty gradually
+* Analyze productivity patterns
+
+The system should NEVER force a universal template.
+
+Instead:
+
+* It provides structure
+* It provides guidance
+* The user remains fully in control
+
+---
+
+## DESIGN PHILOSOPHY
+
+The interface should feel:
+
+* Clean
+* Minimal
+* Motivating
+* Modular
+* Calm
+* Personalized
+
+Avoid:
+
+* Overwhelming dashboards
+* Forced productivity culture
+* Excessive gamification
+
+Use:
+
+* Modular cards
+* Dynamic widgets
+* Editable sections
+* Drag-and-drop blocks
+* Personalized dashboards
+
+---
+
+## TECHNICAL FEATURES
+
+Implement:
+
+* Dynamic database models
+* User-defined schemas
+* Flexible habit engine
+* Modular components
+* Theme customization
+* Progress analytics
+* Notification system
+* Daily streak system
+* Offline-first support
+* Mobile responsive design
+
+---
+
+## MAIN IDEA
+
+This is not a traditional self-improvement app.
+
+This is a:
+"Personal Life Operating System"
+
+The user creates his own path while the platform provides intelligent structure and essential foundations.

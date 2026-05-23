@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from .forms import StyledUserCreationForm
-from .models import UserProfile, DailyProgress, CustomTask
+from .models import UserProfile, DailyProgress, CustomTask, CustomSection, CustomHabit, HabitLog
 
 QUOTES = [
     {'ar': 'إن مع العسر يسرا', 'en': 'Verily, with hardship comes ease'},
@@ -397,6 +397,142 @@ def api_stats_data(request):
         'total_xp': profile.total_xp, 'streak': profile.streak_days,
         'level': profile.get_level(),
     })
+
+
+@login_required
+def my_system(request):
+    today = date.today()
+    sections = CustomSection.objects.filter(user=request.user, is_active=True).prefetch_related('habits')
+    section_data = []
+    for section in sections:
+        habits_data = []
+        for habit in section.habits.filter(is_active=True):
+            try:
+                log = HabitLog.objects.get(habit=habit, user=request.user, date=today)
+                value = log.value
+            except HabitLog.DoesNotExist:
+                value = 0.0
+            if habit.habit_type == 'boolean':
+                done = value >= 1
+                pct = 100 if done else 0
+            else:
+                done = value >= habit.target
+                pct = min(100, int((value / max(habit.target, 1)) * 100))
+            habits_data.append({'habit': habit, 'value': value, 'done': done, 'pct': pct})
+        done_count = sum(1 for h in habits_data if h['done'])
+        total_count = len(habits_data)
+        section_pct = int((done_count / total_count) * 100) if total_count else 0
+        section_data.append({
+            'section': section,
+            'habits': habits_data,
+            'done': done_count,
+            'total': total_count,
+            'pct': section_pct,
+        })
+    ctx = {
+        'section_data': section_data,
+        'profile': request.user.profile,
+        'page': 'my_system',
+    }
+    return render(request, 'tracker/my_system.html', ctx)
+
+
+# ── Personal Life OS API ───────────────────────────────────────────────────────
+
+@login_required
+@require_http_methods(["POST"])
+def api_sections(request):
+    try:
+        data = json.loads(request.body)
+        action = data.get('action')
+        if action == 'create':
+            name = data.get('name', '').strip()
+            icon = data.get('icon', '⭐').strip() or '⭐'
+            if not name:
+                return JsonResponse({'error': 'Name required'}, status=400)
+            order = CustomSection.objects.filter(user=request.user).count()
+            section = CustomSection.objects.create(user=request.user, name=name, icon=icon, order=order)
+            return JsonResponse({'ok': True, 'id': section.id, 'name': section.name, 'icon': section.icon})
+        elif action == 'update':
+            section = CustomSection.objects.get(id=data.get('id'), user=request.user)
+            if 'name' in data and data['name'].strip():
+                section.name = data['name'].strip()
+            if 'icon' in data and data['icon'].strip():
+                section.icon = data['icon'].strip()
+            section.save()
+            return JsonResponse({'ok': True})
+        elif action == 'delete':
+            CustomSection.objects.filter(id=data.get('id'), user=request.user).delete()
+            return JsonResponse({'ok': True})
+        return JsonResponse({'error': 'Unknown action'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+@login_required
+@require_http_methods(["POST"])
+def api_habits(request):
+    try:
+        data = json.loads(request.body)
+        action = data.get('action')
+        if action == 'create':
+            section = CustomSection.objects.get(id=data.get('section_id'), user=request.user)
+            name = data.get('name', '').strip()
+            if not name:
+                return JsonResponse({'error': 'Name required'}, status=400)
+            habit = CustomHabit.objects.create(
+                section=section, user=request.user,
+                name=name,
+                icon=data.get('icon', '✓').strip() or '✓',
+                habit_type=data.get('habit_type', 'boolean'),
+                target=float(data.get('target', 1)),
+                unit=data.get('unit', '').strip(),
+                xp_reward=int(data.get('xp_reward', 10)),
+                order=section.habits.count(),
+            )
+            return JsonResponse({
+                'ok': True, 'id': habit.id, 'name': habit.name, 'icon': habit.icon,
+                'habit_type': habit.habit_type, 'target': habit.target,
+                'unit': habit.unit, 'xp_reward': habit.xp_reward,
+            })
+        elif action == 'delete':
+            CustomHabit.objects.filter(id=data.get('id'), user=request.user).delete()
+            return JsonResponse({'ok': True})
+        return JsonResponse({'error': 'Unknown action'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+@login_required
+@require_http_methods(["POST"])
+def api_habit_log(request):
+    try:
+        data = json.loads(request.body)
+        habit = CustomHabit.objects.get(id=data.get('habit_id'), user=request.user)
+        today = date.today()
+        log, _ = HabitLog.objects.get_or_create(habit=habit, user=request.user, date=today)
+        old_value = log.value
+        log.value = float(data.get('value', 0))
+        log.save()
+        done = log.value >= habit.target if habit.habit_type != 'boolean' else log.value >= 1
+        old_done = old_value >= habit.target if habit.habit_type != 'boolean' else old_value >= 1
+        xp_earned = 0
+        profile = request.user.profile
+        if done and not old_done:
+            xp_earned = habit.xp_reward
+            profile.total_xp += xp_earned
+            profile.save()
+        elif not done and old_done:
+            profile.total_xp = max(0, profile.total_xp - habit.xp_reward)
+            profile.save()
+        profile.refresh_from_db()
+        return JsonResponse({
+            'ok': True, 'done': done, 'value': log.value, 'xp_earned': xp_earned,
+            'total_xp': profile.total_xp, 'level': profile.get_level(),
+            'level_pct': profile.get_level_progress_pct(),
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 
 @login_required

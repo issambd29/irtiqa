@@ -18,9 +18,14 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
 
+    path('my-system/', views.my_system, name='my_system'),
+
     # API (AJAX)
     path('api/update/', views.api_update, name='api_update'),
     path('api/custom-tasks/', views.api_custom_tasks, name='api_custom_tasks'),
     path('api/stats-data/', views.api_stats_data, name='api_stats_data'),
     path('api/settings/', views.api_settings, name='api_settings'),
+    path('api/sections/', views.api_sections, name='api_sections'),
+    path('api/habits/', views.api_habits, name='api_habits'),
+    path('api/habit-log/', views.api_habit_log, name='api_habit_log'),
 ]

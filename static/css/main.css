@@ -475,6 +475,168 @@ html[lang="ar"] .toast { right: auto; left: 1.5rem; }
 .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .badge { display: inline-flex; align-items: center; padding: 0.15rem 0.5rem; border-radius: 0.375rem; font-size: 0.7rem; font-weight: 600; background: var(--primary-10); color: var(--primary); }
 
+/* ── Personal Life OS ── */
+
+/* Modal */
+.sys-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.65);
+  display: none; align-items: center; justify-content: center;
+  z-index: 300; padding: 1rem;
+}
+.sys-modal-overlay.open { display: flex; }
+.sys-modal {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  width: 100%; max-width: 440px;
+  box-shadow: var(--shadow);
+}
+.sys-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+  font-size: 1rem; font-weight: 700;
+}
+.sys-modal-close {
+  background: none; border: none; color: var(--muted-fg);
+  cursor: pointer; font-size: 1rem; padding: .25rem;
+}
+.sys-modal-close:hover { color: var(--foreground); }
+.sys-modal-foot {
+  display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.25rem;
+}
+.sys-field { margin-bottom: .875rem; }
+.sys-field label {
+  display: block; font-size: .72rem; color: var(--muted-fg); margin-bottom: .3rem;
+}
+.sys-input, .sys-select {
+  width: 100%;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  color: var(--foreground);
+  padding: .5rem .75rem;
+  font-size: .875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s;
+}
+.sys-input:focus, .sys-select:focus { border-color: var(--primary); }
+
+/* Buttons */
+.sys-btn {
+  padding: .45rem 1.1rem; border-radius: .5rem; font-size: .875rem;
+  font-weight: 600; cursor: pointer; border: none; transition: opacity .15s;
+  font-family: inherit;
+}
+.sys-btn-primary  { background: var(--primary); color: var(--primary-fg); }
+.sys-btn-secondary{ background: var(--secondary); color: var(--secondary-fg); }
+.sys-btn:hover    { opacity: .85; }
+
+/* Section card */
+.sys-section-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.sys-section-card.completed { border-color: var(--primary-30); }
+.sys-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .875rem 1.125rem;
+  border-bottom: 1px solid var(--card-border);
+}
+.sys-section-title {
+  display: flex; align-items: center; gap: .625rem; min-width: 0;
+}
+.sys-section-icon { font-size: 1.4rem; flex-shrink: 0; }
+.sys-section-name {
+  font-size: .9375rem; font-weight: 600; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.sys-section-badge {
+  font-size: .7rem; font-weight: 700;
+  padding: .15rem .55rem; border-radius: 9999px;
+  background: var(--muted); color: var(--muted-fg);
+  border: 1px solid transparent; white-space: nowrap;
+}
+.sys-section-badge.done {
+  background: var(--primary-10); color: var(--primary);
+  border-color: var(--primary-20);
+}
+.sys-icon-btn {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--muted); border: none; border-radius: .5rem;
+  color: var(--muted-fg); cursor: pointer; transition: all .15s; flex-shrink: 0;
+}
+.sys-icon-btn:hover { background: var(--primary-10); color: var(--primary); }
+.sys-icon-btn-danger:hover { background: var(--destructive-10); color: var(--destructive); }
+
+/* Habits list */
+.sys-habits-list { padding: .375rem .5rem; }
+.sys-habit-row {
+  display: flex; align-items: center; gap: .625rem;
+  padding: .625rem .75rem; border-radius: .625rem;
+  transition: background .15s;
+}
+.sys-habit-row:hover { background: rgba(255,255,255,0.03); }
+.sys-habit-row.done { background: var(--primary-10); }
+.sys-habit-icon { font-size: 1.1rem; flex-shrink: 0; }
+.sys-habit-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: .375rem; flex-wrap: wrap; }
+.sys-habit-name { font-size: .875rem; }
+.sys-habit-target { flex-shrink: 0; }
+.sys-habit-ctrl { flex-shrink: 0; }
+.sys-habit-xp {
+  font-size: .65rem; font-weight: 700;
+  color: var(--accent); background: var(--accent-10);
+  padding: .1rem .4rem; border-radius: .3rem; flex-shrink: 0;
+}
+.sys-habit-del {
+  background: none; border: none; color: transparent;
+  cursor: pointer; font-size: .75rem; padding: .2rem;
+  flex-shrink: 0; transition: color .15s;
+}
+.sys-habit-row:hover .sys-habit-del { color: var(--muted-fg); }
+.sys-habit-del:hover { color: var(--destructive) !important; }
+.sys-habits-empty {
+  padding: 1rem; text-align: center;
+  color: var(--muted-fg); font-size: .8rem;
+}
+.sys-num-input {
+  width: 70px; background: var(--input); border: 1px solid var(--border);
+  border-radius: .4rem; color: var(--foreground); padding: .3rem .5rem;
+  font-size: .875rem; font-family: inherit; outline: none; text-align: center;
+}
+.sys-num-input:focus { border-color: var(--primary); }
+
+/* Empty state */
+.sys-empty-state {
+  text-align: center; padding: 3.5rem 2rem;
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+}
+.sys-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.sys-empty-state h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: .625rem; }
+.sys-empty-state p { font-size: .875rem; color: var(--muted-fg); max-width: 380px; margin: 0 auto; }
+.sys-suggestions { margin-top: 2rem; }
+.sys-suggestion-chips { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
+
+/* Add section dashed card */
+.sys-add-section-card {
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  padding: 1rem; text-align: center;
+  color: var(--muted-fg); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  font-size: .875rem; transition: all .15s;
+}
+.sys-add-section-card:hover {
+  border-color: var(--primary); color: var(--primary);
+  background: var(--primary-10);
+}
+
 /* ── Knowledge inputs ── */
 .knw-input {
   width: 100%;

@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+{% block title %}نظامي{% endblock %}
+
+{% block content %}
+
+<!-- ── Add Section Modal ── -->
+<div class="sys-modal-overlay" id="modal-add-section">
+  <div class="sys-modal">
+    <div class="sys-modal-head">
+      <span class="label-ar">قسم جديد</span>
+      <span class="label-en" style="display:none">New Section</span>
+      <button class="sys-modal-close" onclick="closeModal('modal-add-section')">✕</button>
+    </div>
+    <div class="sys-field">
+      <label class="label-ar">الأيقونة (emoji)</label>
+      <label class="label-en" style="display:none">Icon (emoji)</label>
+      <input class="sys-input" id="ns-icon" value="⭐" maxlength="4" style="width:72px;text-align:center;font-size:1.4rem;" />
+    </div>
+    <div class="sys-field">
+      <label class="label-ar">اسم القسم</label>
+      <label class="label-en" style="display:none">Section Name</label>
+      <input class="sys-input" id="ns-name" placeholder="مثال: الصحة النفسية" />
+    </div>
+    <div class="sys-modal-foot">
+      <button class="sys-btn sys-btn-secondary" onclick="closeModal('modal-add-section')">
+        <span class="label-ar">إلغاء</span><span class="label-en" style="display:none">Cancel</span>
+      </button>
+      <button class="sys-btn sys-btn-primary" onclick="createSection()">
+        <span class="label-ar">إنشاء</span><span class="label-en" style="display:none">Create</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add Habit Modal ── -->
+<div class="sys-modal-overlay" id="modal-add-habit">
+  <div class="sys-modal">
+    <div class="sys-modal-head">
+      <span class="label-ar">إضافة عادة</span>
+      <span class="label-en" style="display:none">Add Habit</span>
+      <button class="sys-modal-close" onclick="closeModal('modal-add-habit')">✕</button>
+    </div>
+    <input type="hidden" id="nh-section-id" value="" />
+    <div style="display:flex;gap:.75rem;">
+      <div class="sys-field" style="flex-shrink:0;">
+        <label class="label-ar">أيقونة</label>
+        <label class="label-en" style="display:none">Icon</label>
+        <input class="sys-input" id="nh-icon" value="✓" maxlength="4" style="width:60px;text-align:center;font-size:1.2rem;" />
+      </div>
+      <div class="sys-field" style="flex:1;">
+        <label class="label-ar">اسم العادة</label>
+        <label class="label-en" style="display:none">Habit Name</label>
+        <input class="sys-input" id="nh-name" placeholder="مثال: تأمل صباحي" />
+      </div>
+    </div>
+    <div class="sys-field">
+      <label class="label-ar">نوع التتبع</label>
+      <label class="label-en" style="display:none">Tracking Type</label>
+      <select class="sys-select" id="nh-type" onchange="onTypeChange()">
+        <option value="boolean">✓ تحقق (نعم / لا)</option>
+        <option value="counter">🔢 عداد (مرات / وحدات)</option>
+        <option value="numeric">📊 رقمي (دقائق / كم)</option>
+      </select>
+    </div>
+    <div id="nh-target-group" style="display:none;gap:.75rem;">
+      <div class="sys-field" style="flex:1;">
+        <label class="label-ar">الهدف اليومي</label>
+        <label class="label-en" style="display:none">Daily Target</label>
+        <input class="sys-input" id="nh-target" type="number" min="1" value="10" />
+      </div>
+      <div class="sys-field" style="flex:1;">
+        <label class="label-ar">الوحدة</label>
+        <label class="label-en" style="display:none">Unit</label>
+        <input class="sys-input" id="nh-unit" placeholder="دقيقة، مرة، كم..." />
+      </div>
+    </div>
+    <div class="sys-field">
+      <label class="label-ar">مكافأة XP</label>
+      <label class="label-en" style="display:none">XP Reward</label>
+      <input class="sys-input" id="nh-xp" type="number" min="1" max="200" value="10" style="width:100px;" />
+    </div>
+    <div class="sys-modal-foot">
+      <button class="sys-btn sys-btn-secondary" onclick="closeModal('modal-add-habit')">
+        <span class="label-ar">إلغاء</span><span class="label-en" style="display:none">Cancel</span>
+      </button>
+      <button class="sys-btn sys-btn-primary" onclick="createHabit()">
+        <span class="label-ar">إضافة</span><span class="label-en" style="display:none">Add</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Page Header ── -->
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+  <div>
+    <h1 class="label-ar">⚡ نظامي</h1>
+    <h1 class="label-en" style="display:none">⚡ My System</h1>
+    <p class="text-muted label-ar">ابنِ نظام حياتك الخاص — كل قسم، كل عادة، كل هدف</p>
+    <p class="text-muted label-en" style="display:none">Build your personal life system — your sections, your habits, your rules</p>
+  </div>
+  <button class="sys-btn sys-btn-primary" onclick="openModal('modal-add-section')" style="white-space:nowrap;">
+    <span class="label-ar">+ قسم جديد</span>
+    <span class="label-en" style="display:none">+ New Section</span>
+  </button>
+</div>
+
+<!-- ── Sections ── -->
+<div class="space-y" id="sections-container">
+
+  {% for sd in section_data %}
+  <div class="sys-section-card" id="section-card-{{ sd.section.id }}">
+
+    <!-- Section Header -->
+    <div class="sys-section-header">
+      <div class="sys-section-title">
+        <span class="sys-section-icon" id="sicon-{{ sd.section.id }}">{{ sd.section.icon }}</span>
+        <span class="sys-section-name" id="sname-{{ sd.section.id }}">{{ sd.section.name }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.625rem;">
+        {% if sd.total > 0 %}
+        <span class="sys-section-badge {% if sd.pct == 100 %}done{% endif %}">
+          {% if sd.pct == 100 %}✓{% else %}{{ sd.done }}/{{ sd.total }}{% endif %}
+        </span>
+        {% endif %}
+        <button class="sys-icon-btn" title="إضافة عادة" onclick="openAddHabit({{ sd.section.id }})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="sys-icon-btn sys-icon-btn-danger" title="حذف القسم" onclick="deleteSection({{ sd.section.id }})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/><path d="M10,11v6M14,11v6"/><path d="M9,6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    {% if sd.total > 0 %}
+    <div class="progress-wrap progress-h1" style="border-radius:0;">
+      <div class="progress-bar" id="spbar-{{ sd.section.id }}" style="width:{{ sd.pct }}%;transition:width .4s;"></div>
+    </div>
+    {% endif %}
+
+    <!-- Habits List -->
+    <div class="sys-habits-list" id="habits-list-{{ sd.section.id }}">
+      {% for hd in sd.habits %}
+      <div class="sys-habit-row {% if hd.done %}done{% endif %}" id="hrow-{{ hd.habit.id }}">
+        <span class="sys-habit-icon">{{ hd.habit.icon }}</span>
+        <div class="sys-habit-info">
+          <span class="sys-habit-name">{{ hd.habit.name }}</span>
+          {% if hd.habit.habit_type != 'boolean' and hd.habit.target > 1 %}
+          <span class="sys-habit-target text-xs text-muted">/ {{ hd.habit.target|floatformat:"0" }}{% if hd.habit.unit %} {{ hd.habit.unit }}{% endif %}</span>
+          {% endif %}
+        </div>
+        <div class="sys-habit-ctrl">
+          {% if hd.habit.habit_type == 'boolean' %}
+            <div class="check-box {% if hd.done %}checked{% endif %}" id="chk-h{{ hd.habit.id }}"
+                 onclick="logBoolean({{ hd.habit.id }}, this, {{ sd.section.id }})">
+              {% if hd.done %}✓{% endif %}
+            </div>
+          {% elif hd.habit.habit_type == 'counter' %}
+            <div class="num-ctrl">
+              <button class="num-btn" onclick="logCounter({{ hd.habit.id }}, -1, {{ hd.habit.target }}, {{ sd.section.id }})">−</button>
+              <span class="num-val" id="hval-{{ hd.habit.id }}">{{ hd.value|floatformat:"0" }}</span>
+              <button class="num-btn plus" onclick="logCounter({{ hd.habit.id }}, 1, {{ hd.habit.target }}, {{ sd.section.id }})">+</button>
+            </div>
+          {% elif hd.habit.habit_type == 'numeric' %}
+            <div style="display:flex;align-items:center;gap:.4rem;">
+              <input type="number" class="sys-num-input" id="hval-{{ hd.habit.id }}"
+                     value="{{ hd.value|floatformat:"0" }}"
+                     onchange="logNumeric({{ hd.habit.id }}, this.value, {{ hd.habit.target }}, {{ sd.section.id }})" />
+              {% if hd.habit.unit %}<span class="text-xs text-muted">{{ hd.habit.unit }}</span>{% endif %}
+            </div>
+          {% endif %}
+        </div>
+        <span class="sys-habit-xp">+{{ hd.habit.xp_reward }} XP</span>
+        <button class="sys-habit-del" onclick="deleteHabit({{ hd.habit.id }}, {{ sd.section.id }})">✕</button>
+      </div>
+      {% empty %}
+      <div class="sys-habits-empty" id="empty-msg-{{ sd.section.id }}">
+        <span class="label-ar">لا توجد عادات — اضغط + لإضافة واحدة</span>
+        <span class="label-en" style="display:none">No habits yet — press + to add one</span>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+  {% empty %}
+
+  <!-- Empty State -->
+  <div class="sys-empty-state" id="empty-state">
+    <div class="sys-empty-icon">⚡</div>
+    <h2 class="label-ar">ابنِ نظامك الخاص</h2>
+    <h2 class="label-en" style="display:none">Build Your Own System</h2>
+    <p class="label-ar">هذا الفضاء خاص بك تماماً. أنشئ أقساماً خاصة بك وأضف العادات التي تناسب حياتك وأهدافك.</p>
+    <p class="label-en" style="display:none">This space is entirely yours. Create custom sections and add habits that fit your life and goals.</p>
+    <button class="sys-btn sys-btn-primary" style="margin-top:1.5rem;padding:.75rem 2rem;font-size:1rem;" onclick="openModal('modal-add-section')">
+      <span class="label-ar">+ أنشئ أول قسم</span>
+      <span class="label-en" style="display:none">+ Create First Section</span>
+    </button>
+    <div class="sys-suggestions">
+      <p class="text-xs text-muted label-ar" style="margin-bottom:.75rem;">أفكار للبداية:</p>
+      <p class="text-xs text-muted label-en" style="display:none;margin-bottom:.75rem;">Ideas to get started:</p>
+      <div class="sys-suggestion-chips">
+        <button class="chip" onclick="quickSection('🧠','التطوير الذهني')">🧠 التطوير الذهني</button>
+        <button class="chip" onclick="quickSection('💼','مسار العمل')">💼 مسار العمل</button>
+        <button class="chip" onclick="quickSection('🎯','أهداف الأسبوع')">🎯 أهداف الأسبوع</button>
+        <button class="chip" onclick="quickSection('🌱','العادات الصغيرة')">🌱 العادات الصغيرة</button>
+        <button class="chip" onclick="quickSection('📓','اليوميات')">📓 اليوميات</button>
+        <button class="chip" onclick="quickSection('🏃','الحركة')">🏃 الحركة</button>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+</div>
+
+<!-- Add section shortcut at bottom (only when sections exist) -->
+{% if section_data %}
+<div class="sys-add-section-card" onclick="openModal('modal-add-section')" style="margin-top:1.25rem;">
+  <span>+</span>
+  <span class="label-ar">إضافة قسم جديد</span>
+  <span class="label-en" style="display:none">Add New Section</span>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const SECTIONS_URL  = '/api/sections/';
+const HABITS_URL    = '/api/habits/';
+const HABIT_LOG_URL = '/api/habit-log/';
+
+// ── Counters for DOM manipulation ──
+const habitValues = {};
+{% for sd in section_data %}{% for hd in sd.habits %}
+habitValues[{{ hd.habit.id }}] = {{ hd.value|floatformat:"0" }};
+{% endfor %}{% endfor %}
+
+// ── Modal helpers ──
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function onTypeChange() {
+  const t = document.getElementById('nh-type').value;
+  const g = document.getElementById('nh-target-group');
+  g.style.display = (t === 'boolean') ? 'none' : 'flex';
+}
+
+// ── Create Section ──
+async function createSection() {
+  const name = document.getElementById('ns-name').value.trim();
+  const icon = document.getElementById('ns-icon').value.trim() || '⭐';
+  if (!name) { showToast(IS_AR ? 'أدخل اسم القسم' : 'Enter section name', 'error'); return; }
+  const res = await fetch(SECTIONS_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({action:'create', name, icon})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    closeModal('modal-add-section');
+    document.getElementById('ns-name').value = '';
+    document.getElementById('ns-icon').value = '⭐';
+    appendSectionCard(data.id, data.icon, data.name);
+    document.getElementById('empty-state') && document.getElementById('empty-state').remove();
+    showToast(IS_AR ? '✓ تم إنشاء القسم' : '✓ Section created');
+  }
+}
+
+function appendSectionCard(id, icon, name) {
+  const container = document.getElementById('sections-container');
+  const html = `
+  <div class="sys-section-card" id="section-card-${id}">
+    <div class="sys-section-header">
+      <div class="sys-section-title">
+        <span class="sys-section-icon" id="sicon-${id}">${icon}</span>
+        <span class="sys-section-name" id="sname-${id}">${name}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.625rem;">
+        <button class="sys-icon-btn" onclick="openAddHabit(${id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="sys-icon-btn sys-icon-btn-danger" onclick="deleteSection(${id})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/><path d="M10,11v6M14,11v6"/><path d="M9,6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sys-habits-list" id="habits-list-${id}">
+      <div class="sys-habits-empty" id="empty-msg-${id}">
+        <span>${IS_AR ? 'لا توجد عادات — اضغط + لإضافة واحدة' : 'No habits yet — press + to add one'}</span>
+      </div>
+    </div>
+  </div>`;
+  container.insertAdjacentHTML('beforeend', html);
+  // Show add section shortcut if not there
+  if (!document.querySelector('.sys-add-section-card')) {
+    container.insertAdjacentHTML('afterend', `<div class="sys-add-section-card" onclick="openModal('modal-add-section')" style="margin-top:1.25rem;"><span>+</span><span>${IS_AR ? 'إضافة قسم جديد' : 'Add New Section'}</span></div>`);
+  }
+}
+
+// ── Delete Section ──
+async function deleteSection(id) {
+  if (!confirm(IS_AR ? 'هل تريد حذف هذا القسم وجميع عاداته؟' : 'Delete this section and all its habits?')) return;
+  const res = await fetch(SECTIONS_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({action:'delete', id})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('section-card-' + id)?.remove();
+    showToast(IS_AR ? '✓ تم حذف القسم' : '✓ Section deleted');
+    if (!document.querySelector('.sys-section-card')) {
+      location.reload();
+    }
+  }
+}
+
+// ── Open Add Habit Modal ──
+function openAddHabit(sectionId) {
+  document.getElementById('nh-section-id').value = sectionId;
+  document.getElementById('nh-name').value = '';
+  document.getElementById('nh-icon').value = '✓';
+  document.getElementById('nh-type').value = 'boolean';
+  document.getElementById('nh-target').value = 10;
+  document.getElementById('nh-unit').value = '';
+  document.getElementById('nh-xp').value = 10;
+  document.getElementById('nh-target-group').style.display = 'none';
+  openModal('modal-add-habit');
+}
+
+// ── Create Habit ──
+async function createHabit() {
+  const sectionId = document.getElementById('nh-section-id').value;
+  const name = document.getElementById('nh-name').value.trim();
+  const icon = document.getElementById('nh-icon').value.trim() || '✓';
+  const habitType = document.getElementById('nh-type').value;
+  const target = parseFloat(document.getElementById('nh-target').value) || 1;
+  const unit = document.getElementById('nh-unit').value.trim();
+  const xp = parseInt(document.getElementById('nh-xp').value) || 10;
+  if (!name) { showToast(IS_AR ? 'أدخل اسم العادة' : 'Enter habit name', 'error'); return; }
+  const res = await fetch(HABITS_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({action:'create', section_id:sectionId, name, icon, habit_type:habitType, target, unit, xp_reward:xp})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    closeModal('modal-add-habit');
+    appendHabitRow(data, sectionId);
+    habitValues[data.id] = 0;
+    showToast(IS_AR ? '✓ تمت إضافة العادة' : '✓ Habit added');
+  }
+}
+
+function appendHabitRow(h, sectionId) {
+  const list = document.getElementById('habits-list-' + sectionId);
+  document.getElementById('empty-msg-' + sectionId)?.remove();
+  let ctrl = '';
+  if (h.habit_type === 'boolean') {
+    ctrl = `<div class="check-box" id="chk-h${h.id}" onclick="logBoolean(${h.id}, this, ${sectionId})"></div>`;
+  } else if (h.habit_type === 'counter') {
+    ctrl = `<div class="num-ctrl">
+      <button class="num-btn" onclick="logCounter(${h.id}, -1, ${h.target}, ${sectionId})">−</button>
+      <span class="num-val" id="hval-${h.id}">0</span>
+      <button class="num-btn plus" onclick="logCounter(${h.id}, 1, ${h.target}, ${sectionId})">+</button>
+    </div>`;
+  } else {
+    ctrl = `<div style="display:flex;align-items:center;gap:.4rem;">
+      <input type="number" class="sys-num-input" id="hval-${h.id}" value="0"
+             onchange="logNumeric(${h.id}, this.value, ${h.target}, ${sectionId})" />
+      ${h.unit ? `<span class="text-xs text-muted">${h.unit}</span>` : ''}
+    </div>`;
+  }
+  const targetLabel = (h.habit_type !== 'boolean' && h.target > 1)
+    ? `<span class="sys-habit-target text-xs text-muted">/ ${Math.round(h.target)}${h.unit ? ' '+h.unit : ''}</span>` : '';
+  const row = `
+  <div class="sys-habit-row" id="hrow-${h.id}">
+    <span class="sys-habit-icon">${h.icon}</span>
+    <div class="sys-habit-info">
+      <span class="sys-habit-name">${h.name}</span>${targetLabel}
+    </div>
+    <div class="sys-habit-ctrl">${ctrl}</div>
+    <span class="sys-habit-xp">+${h.xp_reward} XP</span>
+    <button class="sys-habit-del" onclick="deleteHabit(${h.id}, ${sectionId})">✕</button>
+  </div>`;
+  list.insertAdjacentHTML('beforeend', row);
+}
+
+// ── Delete Habit ──
+async function deleteHabit(id, sectionId) {
+  const res = await fetch(HABITS_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({action:'delete', id})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('hrow-' + id)?.remove();
+    const list = document.getElementById('habits-list-' + sectionId);
+    if (!list.querySelector('.sys-habit-row')) {
+      list.insertAdjacentHTML('beforeend', `<div class="sys-habits-empty" id="empty-msg-${sectionId}"><span>${IS_AR ? 'لا توجد عادات — اضغط + لإضافة واحدة' : 'No habits yet — press + to add one'}</span></div>`);
+    }
+    updateSectionProgress(sectionId);
+    showToast(IS_AR ? '✓ تم حذف العادة' : '✓ Habit deleted');
+  }
+}
+
+// ── Log Boolean ──
+async function logBoolean(id, box, sectionId) {
+  const isDone = box.classList.contains('checked');
+  const newVal = isDone ? 0 : 1;
+  const res = await fetch(HABIT_LOG_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({habit_id: id, value: newVal})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    habitValues[id] = newVal;
+    if (data.done) { box.classList.add('checked'); box.textContent = '✓'; }
+    else           { box.classList.remove('checked'); box.textContent = ''; }
+    document.getElementById('hrow-' + id)?.classList.toggle('done', data.done);
+    if (data.xp_earned > 0) { showXpPopup(data.xp_earned); updateSidebarXP(data.total_xp, data.level, data.level_pct); }
+    updateSectionProgress(sectionId);
+  }
+}
+
+// ── Log Counter ──
+async function logCounter(id, delta, target, sectionId) {
+  habitValues[id] = Math.max(0, (habitValues[id] || 0) + delta);
+  document.getElementById('hval-' + id).textContent = habitValues[id];
+  const res = await fetch(HABIT_LOG_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({habit_id: id, value: habitValues[id]})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('hrow-' + id)?.classList.toggle('done', data.done);
+    if (data.xp_earned > 0) { showXpPopup(data.xp_earned); updateSidebarXP(data.total_xp, data.level, data.level_pct); }
+    updateSectionProgress(sectionId);
+  }
+}
+
+// ── Log Numeric ──
+async function logNumeric(id, value, target, sectionId) {
+  habitValues[id] = parseFloat(value) || 0;
+  const res = await fetch(HABIT_LOG_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
+    body: JSON.stringify({habit_id: id, value: habitValues[id]})
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('hrow-' + id)?.classList.toggle('done', data.done);
+    if (data.xp_earned > 0) { showXpPopup(data.xp_earned); updateSidebarXP(data.total_xp, data.level, data.level_pct); }
+    updateSectionProgress(sectionId);
+  }
+}
+
+// ── Section Progress ──
+function updateSectionProgress(sectionId) {
+  const list = document.getElementById('habits-list-' + sectionId);
+  if (!list) return;
+  const rows = list.querySelectorAll('.sys-habit-row');
+  const doneRows = list.querySelectorAll('.sys-habit-row.done');
+  const total = rows.length;
+  const done = doneRows.length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const bar = document.getElementById('spbar-' + sectionId);
+  if (bar) bar.style.width = pct + '%';
+  const badge = document.querySelector(`#section-card-${sectionId} .sys-section-badge`);
+  if (badge) {
+    badge.textContent = pct === 100 ? '✓' : `${done}/${total}`;
+    badge.classList.toggle('done', pct === 100);
+  }
+  const card = document.getElementById('section-card-' + sectionId);
+  if (card) card.classList.toggle('completed', pct === 100);
+}
+
+// ── Quick section shortcuts ──
+async function quickSection(icon, name) {
+  document.getElementById('ns-icon').value = icon;
+  document.getElementById('ns-name').value = name;
+  await createSection();
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.sys-modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+{% endblock %}

@@ -192,3 +192,63 @@ class CustomTask(models.Model):
 
     def __str__(self):
         return f"{self.user.username} — {self.label} ({self.date})"
+
+
+# ── Personal Life OS ──────────────────────────────────────────────────────────
+
+class CustomSection(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='custom_sections')
+    name = models.CharField(max_length=100)
+    icon = models.CharField(max_length=10, default='⭐')
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        return f"{self.user.username} — {self.name}"
+
+
+class CustomHabit(models.Model):
+    TYPE_BOOLEAN = 'boolean'
+    TYPE_COUNTER = 'counter'
+    TYPE_NUMERIC = 'numeric'
+    HABIT_TYPES = [
+        (TYPE_BOOLEAN, 'Checkbox'),
+        (TYPE_COUNTER, 'Counter'),
+        (TYPE_NUMERIC, 'Numeric'),
+    ]
+
+    section = models.ForeignKey(CustomSection, on_delete=models.CASCADE, related_name='habits')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='custom_habits')
+    name = models.CharField(max_length=200)
+    icon = models.CharField(max_length=10, default='✓')
+    habit_type = models.CharField(max_length=20, choices=HABIT_TYPES, default=TYPE_BOOLEAN)
+    target = models.FloatField(default=1.0)
+    unit = models.CharField(max_length=30, blank=True, default='')
+    xp_reward = models.IntegerField(default=10)
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        return f"{self.user.username} — {self.name}"
+
+
+class HabitLog(models.Model):
+    habit = models.ForeignKey(CustomHabit, on_delete=models.CASCADE, related_name='logs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='habit_logs')
+    date = models.DateField()
+    value = models.FloatField(default=0)
+
+    class Meta:
+        unique_together = ['habit', 'user', 'date']
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.user.username} — {self.habit.name} — {self.date}"

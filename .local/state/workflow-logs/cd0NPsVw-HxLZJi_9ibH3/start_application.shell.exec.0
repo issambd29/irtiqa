@@ -1,0 +1,127 @@
+[36;1mMigrations for 'tracker':[0m
+  [1mtracker/migrations/0005_customsection_customhabit_habitlog.py[0m
+    + Create model CustomSection
+    + Create model CustomHabit
+    + Create model HabitLog
+[36;1mOperations to perform:[0m
+[1m  Apply all migrations: [0madmin, auth, contenttypes, sessions, tracker
+[36;1mRunning migrations:[0m
+  Applying tracker.0005_customsection_customhabit_habitlog...[32;1m OK[0m
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+May 23, 2026 - 19:35:36
+Django version 5.1.15, using settings 'improvement.settings'
+Starting development server at http://0.0.0.0:5000/
+Quit the server with CONTROL-C.
+
+[23/May/2026 19:35:37] [32m"GET / HTTP/1.1" 302 0[0m
+[23/May/2026 19:35:37] [m"GET /dashboard/ HTTP/1.1" 200 23567[0m
+[23/May/2026 19:35:49] [32m"GET /my-system/ HTTP/1.1" 302 0[0m
+[23/May/2026 19:35:49] [m"GET /login/?next=/my-system/ HTTP/1.1" 200 6602[0m
+[23/May/2026 19:35:49] [m"GET /static/img/logo.png HTTP/1.1" 200 1705061[0m
+[23/May/2026 19:48:05] [m"GET /physical/ HTTP/1.1" 200 16382[0m
+[23/May/2026 19:48:07] [m"GET /physical/ HTTP/1.1" 200 16382[0m
+[23/May/2026 19:48:09] [m"GET /dashboard/ HTTP/1.1" 200 23567[0m
+[23/May/2026 19:48:14] [m"GET /physical/ HTTP/1.1" 200 16382[0m
+[23/May/2026 19:48:18] [m"GET /knowledge/ HTTP/1.1" 200 20939[0m
+[23/May/2026 19:48:29] [m"GET /islamic/ HTTP/1.1" 200 18566[0m
+[23/May/2026 19:48:35] [m"GET /programming/ HTTP/1.1" 200 16964[0m
+[23/May/2026 19:48:38] [m"GET /my-system/ HTTP/1.1" 200 26479[0m
+[23/May/2026 19:48:43] [m"GET /my-system/ HTTP/1.1" 200 26479[0m
+[23/May/2026 19:49:07] [m"GET /stats/ HTTP/1.1" 200 11859[0m
+[23/May/2026 19:49:07] [m"GET /api/stats-data/?days=30 HTTP/1.1" 200 831[0m
+[23/May/2026 19:49:10] [m"GET /achievements/ HTTP/1.1" 200 16122[0m
+[23/May/2026 19:49:13] [m"GET /settings/ HTTP/1.1" 200 12672[0m
+[23/May/2026 19:54:32] [m"GET /my-system/ HTTP/1.1" 200 26479[0m
+[23/May/2026 20:07:10] [m"GET /programming/ HTTP/1.1" 200 16964[0m
+[23/May/2026 20:07:13] [m"GET /my-system/ HTTP/1.1" 200 26479[0m
+[23/May/2026 20:07:14] [m"GET /achievements/ HTTP/1.1" 200 16122[0m
+[23/May/2026 20:07:16] [m"GET /stats/ HTTP/1.1" 200 11859[0m
+[23/May/2026 20:07:17] [m"GET /api/stats-data/?days=30 HTTP/1.1" 200 831[0m
+[23/May/2026 20:07:19] [m"GET /settings/ HTTP/1.1" 200 12672[0m
+[23/May/2026 20:07:22] [m"GET /achievements/ HTTP/1.1" 200 16122[0m
+[23/May/2026 20:10:44] [32m"GET /my-system/ HTTP/1.1" 302 0[0m
+[23/May/2026 20:10:44] [m"GET /login/?next=/my-system/ HTTP/1.1" 200 6602[0m
+[23/May/2026 20:10:44] [m"GET /static/img/logo.png HTTP/1.1" 200 1705061[0m
+[23/May/2026 20:11:45] [m"GET /my-system/ HTTP/1.1" 200 36564[0m
+[23/May/2026 20:11:53] [m"GET /my-system/ HTTP/1.1" 200 36564[0m
+[23/May/2026 20:11:53] [m"GET /static/css/main.css HTTP/1.1" 200 42660[0m
+[23/May/2026 20:12:39] [m"POST /api/sections/ HTTP/1.1" 200 56[0m
+[23/May/2026 20:14:00] [m"POST /api/habits/ HTTP/1.1" 200 126[0m
+[23/May/2026 20:14:07] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:08] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:09] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:10] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:11] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:15] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:15] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:15] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:16] [m"POST /api/habit-log/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:14:16] [m"POST /api/habit-log/ HTTP/1.1" 200 101[0m
+[23/May/2026 20:14:28] [m"POST /api/habit-log/ HTTP/1.1" 200 101[0m
+[23/May/2026 20:14:29] [m"POST /api/habit-log/ HTTP/1.1" 200 101[0m
+[23/May/2026 20:14:29] [m"POST /api/habit-log/ HTTP/1.1" 200 101[0m
+[23/May/2026 20:14:29] [m"POST /api/habit-log/ HTTP/1.1" 200 101[0m
+[23/May/2026 20:14:31] [m"POST /api/habit-log/ HTTP/1.1" 200 103[0m
+[23/May/2026 20:14:31] [m"POST /api/habit-log/ HTTP/1.1" 200 102[0m
+[23/May/2026 20:14:34] [m"POST /api/habit-log/ HTTP/1.1" 200 102[0m
+[23/May/2026 20:14:54] [m"POST /api/sections/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:14:54] [m"GET /my-system/ HTTP/1.1" 200 36566[0m
+[23/May/2026 20:14:55] [36m"GET /static/css/main.css HTTP/1.1" 304 0[0m
+[23/May/2026 20:14:55] [m"GET /static/img/logo.png HTTP/1.1" 200 1705061[0m
+[23/May/2026 20:15:02] [m"GET /stats/ HTTP/1.1" 200 11862[0m
+[23/May/2026 20:15:02] [m"GET /api/stats-data/?days=30 HTTP/1.1" 200 832[0m
+[23/May/2026 20:15:06] [m"GET /achievements/ HTTP/1.1" 200 16124[0m
+[23/May/2026 20:15:10] [m"GET /settings/ HTTP/1.1" 200 12675[0m
+[23/May/2026 20:15:17] [m"POST /api/settings/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:15:17] [m"GET /islamic/ HTTP/1.1" 200 18568[0m
+[23/May/2026 20:15:22] [m"GET /programming/ HTTP/1.1" 200 16966[0m
+[23/May/2026 20:15:22] [36m"GET /static/css/main.css HTTP/1.1" 304 0[0m
+[23/May/2026 20:15:25] [m"GET /knowledge/ HTTP/1.1" 200 20941[0m
+[23/May/2026 20:15:33] [m"GET /physical/ HTTP/1.1" 200 16384[0m
+[23/May/2026 20:15:40] [m"GET /dashboard/ HTTP/1.1" 200 23522[0m
+/home/runner/workspace/tracker/views.py changed, reloading.
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+May 23, 2026 - 20:29:46
+Django version 5.1.15, using settings 'improvement.settings'
+Starting development server at http://0.0.0.0:5000/
+Quit the server with CONTROL-C.
+
+[23/May/2026 20:29:48] [32m"GET / HTTP/1.1" 302 0[0m
+[23/May/2026 20:29:48] [m"GET /dashboard/ HTTP/1.1" 200 23522[0m
+[23/May/2026 20:31:32] [32m"GET /programming/ HTTP/1.1" 302 0[0m
+[23/May/2026 20:31:32] [m"GET /login/?next=/programming/ HTTP/1.1" 200 6602[0m
+[23/May/2026 20:31:33] [m"GET /static/img/logo.png HTTP/1.1" 200 1705061[0m
+[23/May/2026 20:33:45] [32m"GET / HTTP/1.1" 302 0[0m
+[23/May/2026 20:33:45] [m"GET /dashboard/ HTTP/1.1" 200 23572[0m
+[23/May/2026 20:33:52] [m"GET /dashboard/ HTTP/1.1" 200 23561[0m
+[23/May/2026 20:33:53] [m"GET /dashboard/ HTTP/1.1" 200 23561[0m
+[23/May/2026 20:34:02] [m"GET /settings/ HTTP/1.1" 200 12675[0m
+[23/May/2026 20:34:05] [m"POST /api/settings/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:34:08] [m"POST /api/settings/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:34:19] [m"POST /api/settings/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:34:22] [m"POST /api/settings/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:34:28] [m"GET /achievements/ HTTP/1.1" 200 21444[0m
+[23/May/2026 20:34:30] [m"GET /achievements/ HTTP/1.1" 200 21444[0m
+[23/May/2026 20:34:30] [m"GET /static/css/main.css HTTP/1.1" 200 48136[0m
+[23/May/2026 20:34:49] [m"GET /settings/ HTTP/1.1" 200 12675[0m
+[23/May/2026 20:34:52] [m"GET /stats/ HTTP/1.1" 200 11862[0m
+[23/May/2026 20:34:52] [m"GET /api/stats-data/?days=30 HTTP/1.1" 200 832[0m
+[23/May/2026 20:34:54] [m"GET /my-system/ HTTP/1.1" 200 36566[0m
+[23/May/2026 20:34:57] [m"POST /api/sections/ HTTP/1.1" 200 130[0m
+[23/May/2026 20:35:05] [m"GET /my-system/ HTTP/1.1" 200 37371[0m
+[23/May/2026 20:35:06] [36m"GET /static/css/main.css HTTP/1.1" 304 0[0m
+[23/May/2026 20:35:12] [m"POST /api/sections/ HTTP/1.1" 200 12[0m
+[23/May/2026 20:35:12] [m"GET /my-system/ HTTP/1.1" 200 36566[0m
+[23/May/2026 20:35:18] [m"GET /programming/ HTTP/1.1" 200 20697[0m
+[23/May/2026 20:35:31] [m"GET /islamic/ HTTP/1.1" 200 18568[0m
+[23/May/2026 20:35:36] [m"GET /knowledge/ HTTP/1.1" 200 20941[0m
+[23/May/2026 20:35:36] [36m"GET /static/css/main.css HTTP/1.1" 304 0[0m
+[23/May/2026 20:35:42] [m"GET /physical/ HTTP/1.1" 200 16384[0m
+[23/May/2026 20:35:48] [m"POST /api/update/ HTTP/1.1" 200 100[0m
+[23/May/2026 20:35:51] [m"GET /my-system/ HTTP/1.1" 200 36564[0m

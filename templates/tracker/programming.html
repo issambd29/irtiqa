@@ -3,15 +3,123 @@
 
 {% block content %}
 <div class="page-header">
-  <h1 class="label-ar">البرمجة</h1>
-  <h1 class="label-en" style="display:none">Programming</h1>
-  <p class="text-muted label-ar">مؤقت بومودورو وجلسات البرمجة</p>
-  <p class="text-muted label-en" style="display:none">Pomodoro timer and coding sessions</p>
+  <h1 class="label-ar">أهداف البرمجة</h1>
+  <h1 class="label-en" style="display:none">Programming Goals</h1>
+  <p class="text-muted label-ar">طوّر مهاراتك التقنية</p>
+  <p class="text-muted label-en" style="display:none">Sharpen your technical skills</p>
 </div>
 
-<div class="grid grid-2" style="gap:1.25rem;align-items:start;">
+<div class="space-y">
 
-  <!-- ── Pomodoro ── -->
+  <!-- ── Coding Session Card ── -->
+  <div class="prog-card {% if progress.coding_minutes >= profile.coding_target %}completed{% endif %}" id="coding-card">
+    <div class="prog-card-header">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div class="prog-card-icon">⌨</div>
+        <div>
+          <div class="prog-card-title label-ar">البرمجة اليومية</div>
+          <div class="prog-card-title label-en" style="display:none">Daily Coding</div>
+        </div>
+      </div>
+      <div class="prog-check {% if progress.coding_minutes >= profile.coding_target %}done{% endif %}" id="coding-check">
+        {% if progress.coding_minutes >= profile.coding_target %}
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Minutes display -->
+    <div class="prog-val-row">
+      <span class="label-ar">دقائق البرمجة:</span>
+      <span class="label-en" style="display:none">Coding minutes:</span>
+      <strong class="text-primary" style="margin-inline-start:.35rem;" id="coding-val">{{ progress.coding_minutes }}</strong>
+      <span class="text-muted text-xs" style="margin-inline-start:.2rem;">min</span>
+    </div>
+
+    <!-- Slider -->
+    <input type="range" class="prog-slider" id="coding-slider"
+           min="0" max="{{ profile.coding_target }}" step="5"
+           value="{{ progress.coding_minutes }}"
+           oninput="sliderCoding(this.value)" onchange="saveCoding(this.value)" />
+
+    <!-- Progress bar -->
+    <div class="progress-wrap progress-h2 mb-1">
+      <div class="progress-bar prog-purple" id="coding-bar" style="width:{{ coding_pct }}%"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;" class="text-xs text-muted mb-4">
+      <span>
+        <span id="coding-val2">{{ progress.coding_minutes }}</span> / {{ profile.coding_target }}
+        <span class="label-ar">دقيقة</span><span class="label-en" style="display:none">min</span>
+      </span>
+      <span style="color:hsl(280,55%,60%);font-weight:700;"><span id="coding-pct">{{ coding_pct }}</span>%</span>
+    </div>
+
+    <!-- Language chips -->
+    <div class="prog-section-label label-ar">لغة البرمجة</div>
+    <div class="prog-section-label label-en" style="display:none">Programming Language</div>
+    <div class="prog-lang-chips">
+      <button class="prog-chip" onclick="selectLang(this)">JavaScript</button>
+      <button class="prog-chip" onclick="selectLang(this)">Python</button>
+      <button class="prog-chip" onclick="selectLang(this)">Rust</button>
+      <button class="prog-chip" onclick="selectLang(this)">C++</button>
+      <button class="prog-chip" onclick="selectLang(this)">TypeScript</button>
+      <button class="prog-chip" onclick="selectLang(this)">Swift</button>
+    </div>
+
+    <!-- Project input -->
+    <div style="margin-top:.875rem;">
+      <div class="prog-section-label label-ar">المشروع الحالي</div>
+      <div class="prog-section-label label-en" style="display:none">Current Project</div>
+      <input class="prog-input" id="project-input" placeholder="اسم المشروع..." />
+    </div>
+
+    <!-- XP reward -->
+    <div class="prog-xp-bar">
+      <span class="prog-xp-tag">XP 50+</span>
+      <span class="text-xs text-muted label-ar">أكمل هدف البرمجة اليومي للحصول على المكافأة</span>
+      <span class="text-xs text-muted label-en" style="display:none">Complete your daily coding goal to earn XP</span>
+    </div>
+  </div>
+
+  <!-- ── Daily Tasks Card ── -->
+  <div class="habit-card">
+    <div class="habit-card-header">
+      <div class="habit-card-title">
+        <div class="habit-card-icon">📋</div>
+        <span class="label-ar">المهام اليومية</span>
+        <span class="label-en" style="display:none">Daily Tasks</span>
+      </div>
+    </div>
+    <div class="habit-card-body" style="padding-top:0;">
+      <div class="prog-task-row">
+        <span class="prog-task-name label-ar">أتممت درساً أو شرحاً</span>
+        <span class="prog-task-name label-en" style="display:none">Completed a lesson or tutorial</span>
+        <div class="sys-check" onclick="toggleTask(this)"></div>
+      </div>
+      <div class="prog-task-row">
+        <span class="prog-task-name label-ar">حللت مسائل برمجية</span>
+        <span class="prog-task-name label-en" style="display:none">Solved coding problems</span>
+        <div class="sys-check" onclick="toggleTask(this)"></div>
+      </div>
+      <div class="prog-task-row">
+        <span class="prog-task-name label-ar">شاهدت شروحات</span>
+        <span class="prog-task-name label-en" style="display:none">Watched explanations</span>
+        <div class="sys-check" onclick="toggleTask(this)"></div>
+      </div>
+      <div class="prog-task-row">
+        <span class="prog-task-name label-ar">بنيت أو عملت على مشاريع</span>
+        <span class="prog-task-name label-en" style="display:none">Built or worked on projects</span>
+        <div class="sys-check" onclick="toggleTask(this)"></div>
+      </div>
+      <div class="prog-task-row">
+        <span class="prog-task-name label-ar">كتبت كوداً اليوم</span>
+        <span class="prog-task-name label-en" style="display:none">Wrote code today</span>
+        <div class="sys-check" onclick="toggleTask(this)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pomodoro Card ── -->
   <div class="habit-card">
     <div class="habit-card-header">
       <div class="habit-card-title">
@@ -24,7 +132,6 @@
       </span>
     </div>
     <div class="habit-card-body">
-
       <div class="pomo-modes">
         <button class="btn btn-ghost btn-sm mode-btn active" onclick="setMode('work', this)" id="mode-work">
           <span class="label-ar">تركيز (25د)</span><span class="label-en" style="display:none">Focus (25m)</span>
@@ -36,7 +143,6 @@
           <span class="label-ar">طويلة (15د)</span><span class="label-en" style="display:none">Long (15m)</span>
         </button>
       </div>
-
       <div class="pomo-circle" id="pomo-circle">
         <div class="pomo-time" id="pomo-time">25:00</div>
         <div class="pomo-label">
@@ -44,7 +150,6 @@
           <span class="label-en" style="display:none" id="pomo-lbl-en">Start focusing</span>
         </div>
       </div>
-
       <div class="pomo-btns">
         <button class="btn btn-primary" id="pomo-start" onclick="toggleTimer()">
           <span class="label-ar">▶ ابدأ</span><span class="label-en" style="display:none">▶ Start</span>
@@ -53,61 +158,10 @@
           ↺ <span class="label-ar">إعادة</span><span class="label-en" style="display:none">Reset</span>
         </button>
       </div>
-
       <div class="text-center text-xs text-muted mt-4">
         🍅 <span class="label-ar">جلسات مكتملة:</span><span class="label-en" style="display:none">Sessions:</span>
         <strong class="text-primary" id="pomo-count-disp">{{ progress.pomodoros_done }}</strong> / 4
         <span class="text-accent">(+30 XP)</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Coding session ── -->
-  <div class="habit-card {% if progress.coding_minutes >= profile.coding_target %}completed{% endif %}">
-    <div class="habit-card-header">
-      <div class="habit-card-title">
-        <div class="habit-card-icon">⌨</div>
-        <span class="label-ar">جلسة البرمجة</span>
-        <span class="label-en" style="display:none">Coding Session</span>
-      </div>
-      <span class="habit-card-badge {% if progress.coding_minutes >= profile.coding_target %}done{% endif %}">
-        <span id="coding-badge">{{ coding_pct }}%</span>
-      </span>
-    </div>
-    <div class="habit-card-body">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.875rem;">
-        <div>
-          <div class="text-sm font-medium label-ar">دقائق البرمجة</div>
-          <div class="text-sm font-medium label-en" style="display:none">Coding Minutes</div>
-          <div class="text-xs text-muted mt-1">
-            <span class="label-ar">الهدف: {{ profile.coding_target }} دقيقة · +50 XP</span>
-            <span class="label-en" style="display:none">Target: {{ profile.coding_target }} min · +50 XP</span>
-          </div>
-        </div>
-        <div class="num-ctrl">
-          <button class="num-btn" onclick="changeCoding(-15)">−15</button>
-          <span class="num-val" id="coding-val">{{ progress.coding_minutes }}</span>
-          <button class="num-btn plus" onclick="changeCoding(15)">+15</button>
-        </div>
-      </div>
-      <div class="progress-wrap progress-h2 mb-1">
-        <div class="progress-bar prog-purple" id="coding-bar" style="width:{{ coding_pct }}%"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;" class="text-xs text-muted mb-4">
-        <span><span id="coding-val2">{{ progress.coding_minutes }}</span> / {{ profile.coding_target }} <span class="label-ar">دقيقة</span><span class="label-en" style="display:none">min</span></span>
-        <span style="color:hsl(280,55%,60%)"><span id="coding-pct">{{ coding_pct }}</span>%</span>
-      </div>
-
-      <div class="stat-grid-3" style="grid-template-columns:1fr 1fr;">
-        <div class="stat-card">
-          <div class="stat-label label-ar">دقائق اليوم</div>
-          <div class="stat-label label-en" style="display:none">Mins today</div>
-          <div class="stat-value text-primary" id="stat-coding">{{ progress.coding_minutes }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">🍅 Pomodoros</div>
-          <div class="stat-value text-accent" id="stat-pomos">{{ progress.pomodoros_done }}</div>
-        </div>
       </div>
     </div>
   </div>
@@ -117,10 +171,48 @@
 
 {% block extra_js %}
 <script>
-let codingVal = {{ progress.coding_minutes }};
+let codingVal    = {{ progress.coding_minutes }};
 const codingTarget = {{ profile.coding_target }};
 let pomodorosVal = {{ progress.pomodoros_done }};
 
+/* ── Slider ──────────────────────────────────────────── */
+function sliderCoding(v) {
+  codingVal = parseInt(v);
+  const pct = Math.min(100, Math.round((codingVal / codingTarget) * 100));
+  document.getElementById('coding-val').textContent  = codingVal;
+  document.getElementById('coding-val2').textContent = codingVal;
+  document.getElementById('coding-bar').style.width  = pct + '%';
+  document.getElementById('coding-pct').textContent  = pct;
+  const chk = document.getElementById('coding-check');
+  const done = codingVal >= codingTarget;
+  chk.classList.toggle('done', done);
+  chk.innerHTML = done
+    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>'
+    : '';
+  document.getElementById('coding-card').classList.toggle('completed', done);
+}
+async function saveCoding(v) {
+  codingVal = parseInt(v);
+  const res = await apiUpdate('coding_minutes', codingVal);
+  if (res && res.ok && codingVal >= codingTarget) showXpPopup(50);
+}
+
+/* ── Language chips ───────────────────────────────────── */
+function selectLang(btn) {
+  document.querySelectorAll('.prog-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ── Daily tasks (local only) ─────────────────────────── */
+function toggleTask(box) {
+  const done = !box.classList.contains('checked');
+  box.classList.toggle('checked', done);
+  box.innerHTML = done
+    ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>'
+    : '';
+}
+
+/* ── Pomodoro ─────────────────────────────────────────── */
 const modes = { work: 25*60, short: 5*60, long: 15*60 };
 let currentMode = 'work';
 let timeLeft = modes.work;
@@ -134,8 +226,7 @@ function setMode(mode, btn) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   updateTimerDisplay();
-  const startBtn = document.getElementById('pomo-start');
-  startBtn.innerHTML = IS_AR ? '<span class="label-ar">▶ ابدأ</span>' : '▶ Start';
+  document.getElementById('pomo-start').innerHTML = IS_AR ? '<span>▶ ابدأ</span>' : '▶ Start';
   document.getElementById('pomo-circle').classList.remove('running');
 }
 
@@ -153,11 +244,11 @@ function toggleTimer() {
   const startBtn = document.getElementById('pomo-start');
   if (isRunning) {
     clearInterval(timerInterval); isRunning = false;
-    startBtn.innerHTML = IS_AR ? '<span class="label-ar">▶ ابدأ</span>' : '▶ Start';
+    startBtn.innerHTML = IS_AR ? '<span>▶ ابدأ</span>' : '▶ Start';
     document.getElementById('pomo-circle').classList.remove('running');
   } else {
     isRunning = true;
-    startBtn.innerHTML = IS_AR ? '<span class="label-ar">⏸ إيقاف</span>' : '⏸ Pause';
+    startBtn.innerHTML = IS_AR ? '<span>⏸ إيقاف</span>' : '⏸ Pause';
     document.getElementById('pomo-circle').classList.add('running');
     timerInterval = setInterval(tick, 1000);
   }
@@ -169,23 +260,21 @@ function tick() {
   if (timeLeft <= 0) {
     clearInterval(timerInterval); isRunning = false;
     document.getElementById('pomo-circle').classList.remove('running');
-    document.getElementById('pomo-start').innerHTML = IS_AR ? '<span class="label-ar">▶ ابدأ</span>' : '▶ Start';
+    document.getElementById('pomo-start').innerHTML = IS_AR ? '<span>▶ ابدأ</span>' : '▶ Start';
     if (currentMode === 'work') {
       pomodorosVal++;
       codingVal += 25;
       const pct = Math.min(100, Math.round((codingVal / codingTarget) * 100));
       document.getElementById('pomodoros-done').textContent = pomodorosVal;
       document.getElementById('pomo-count-disp').textContent = pomodorosVal;
-      document.getElementById('stat-pomos').textContent = pomodorosVal;
-      document.getElementById('coding-val').textContent = codingVal;
+      document.getElementById('coding-val').textContent  = codingVal;
       document.getElementById('coding-val2').textContent = codingVal;
-      document.getElementById('stat-coding').textContent = codingVal;
-      document.getElementById('coding-bar').style.width = pct + '%';
-      document.getElementById('coding-pct').textContent = pct;
-      document.getElementById('coding-badge').textContent = pct + '%';
+      document.getElementById('coding-bar').style.width  = pct + '%';
+      document.getElementById('coding-pct').textContent  = pct;
+      document.getElementById('coding-slider').value = Math.min(codingVal, codingTarget);
       apiUpdate('pomodoros_done', pomodorosVal);
       apiUpdate('coding_minutes', codingVal).then(res => {
-        if (res.ok && codingVal >= codingTarget) showXpPopup(50);
+        if (res && res.ok && codingVal >= codingTarget) showXpPopup(50);
       });
       if (pomodorosVal >= 4) showXpPopup(30);
       showToast(IS_AR ? '🍅 بومودورو مكتمل!' : '🍅 Pomodoro complete!');
@@ -199,21 +288,8 @@ function resetTimer() {
   clearInterval(timerInterval); isRunning = false;
   timeLeft = modes[currentMode];
   updateTimerDisplay();
-  document.getElementById('pomo-start').innerHTML = IS_AR ? '<span class="label-ar">▶ ابدأ</span>' : '▶ Start';
+  document.getElementById('pomo-start').innerHTML = IS_AR ? '<span>▶ ابدأ</span>' : '▶ Start';
   document.getElementById('pomo-circle').classList.remove('running');
-}
-
-async function changeCoding(delta) {
-  codingVal = Math.max(0, codingVal + delta);
-  const pct = Math.min(100, Math.round((codingVal / codingTarget) * 100));
-  document.getElementById('coding-val').textContent = codingVal;
-  document.getElementById('coding-val2').textContent = codingVal;
-  document.getElementById('stat-coding').textContent = codingVal;
-  document.getElementById('coding-bar').style.width = pct + '%';
-  document.getElementById('coding-pct').textContent = pct;
-  document.getElementById('coding-badge').textContent = pct + '%';
-  const res = await apiUpdate('coding_minutes', codingVal);
-  if (res.ok && codingVal >= codingTarget) showXpPopup(50);
 }
 </script>
 {% endblock %}

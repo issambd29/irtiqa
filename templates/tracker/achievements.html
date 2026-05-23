@@ -11,10 +11,11 @@
   </p>
 </div>
 
+<!-- ── Overall progress ── -->
 <div class="card mb-5" style="padding:1rem 1.25rem;">
   <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;" class="text-xs text-muted">
-    <span class="label-ar">التقدم</span>
-    <span class="label-en" style="display:none">Progress</span>
+    <span class="label-ar">التقدم الكلي</span>
+    <span class="label-en" style="display:none">Overall Progress</span>
     <span class="text-primary font-semibold">{{ unlocked_count }}/{{ total_count }}</span>
   </div>
   <div class="progress-wrap progress-h3">
@@ -22,6 +23,53 @@
   </div>
 </div>
 
+<!-- ── Level Map ── -->
+<div class="card mb-5">
+  <div class="habit-card-header" style="padding:.875rem 1.125rem;border-bottom:1px solid var(--card-border);">
+    <div class="habit-card-title">
+      <span>🗺️</span>
+      <span class="label-ar">خارطة المستويات</span>
+      <span class="label-en" style="display:none">Level Map</span>
+    </div>
+  </div>
+  <div class="lvl-map">
+    {% for lvl in level_map %}
+    <div class="lvl-row {% if lvl.current %}current{% elif lvl.reached %}reached{% endif %}">
+      <div class="lvl-row-left">
+        {% if lvl.current %}
+        <div class="lvl-you-badge label-ar">← أنت هنا</div>
+        <div class="lvl-you-badge label-en" style="display:none">← You are here</div>
+        {% endif %}
+        <div class="lvl-name">{{ lvl.name_ar }}</div>
+        <div class="lvl-xp-req">XP {{ lvl.xp_required|floatformat:"0" }}</div>
+      </div>
+      <div class="lvl-num {% if lvl.current %}active{% elif lvl.reached %}reached{% endif %}">{{ lvl.number }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ── XP Table ── -->
+<div class="card mb-5">
+  <div class="habit-card-header" style="padding:.875rem 1.125rem;border-bottom:1px solid var(--card-border);">
+    <div class="habit-card-title">
+      <span>📋</span>
+      <span class="label-ar">جدول نقاط XP</span>
+      <span class="label-en" style="display:none">XP Points Table</span>
+    </div>
+  </div>
+  <div class="xp-table">
+    {% for row in xp_table %}
+    <div class="xp-row">
+      <span class="xp-action label-ar">{{ row.name_ar }}</span>
+      <span class="xp-action label-en" style="display:none">{{ row.name_en }}</span>
+      <span class="xp-val">XP {{ row.xp }}+</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ── Achievements Grid ── -->
 <div class="grid grid-2" style="gap:0.75rem;">
   {% for a in achievements %}
   <div class="achievement {% if a.unlocked %}unlocked{% endif %}">
@@ -48,4 +96,5 @@
   </div>
   {% endfor %}
 </div>
+
 {% endblock %}

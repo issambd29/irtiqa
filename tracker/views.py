@@ -256,11 +256,50 @@ def achievements(request):
         ach('العالم', 'Scholar', 'اقرأ 100 صفحة قرآن', 'Read 100 Quran pages', '🌙', total_quran >= 100),
     ]
 
+    # Level map data
+    LEVELS = [
+        (1, 'مبتدئ', 'Beginner', 0),
+        (2, 'مركّز', 'Focused', 500),
+        (3, 'منضبط', 'Disciplined', 1500),
+        (4, 'مخلص', 'Dedicated', 3000),
+        (5, 'طالب علم', 'Seeker', 6000),
+        (6, 'متقن', 'Master', 10000),
+    ]
+    current_level = profile.get_level()
+    level_map = []
+    for num, name_ar, name_en, xp_req in LEVELS:
+        level_map.append({
+            'number': num,
+            'name_ar': name_ar,
+            'name_en': name_en,
+            'xp_required': xp_req,
+            'current': num == current_level,
+            'reached': profile.total_xp >= xp_req,
+        })
+
+    # XP table
+    xp_table = [
+        {'name_ar': 'الصلوات الخمس', 'name_en': 'Five Prayers', 'xp': 80},
+        {'name_ar': 'صلاة في المسجد', 'name_en': 'Mosque Prayer', 'xp': 50},
+        {'name_ar': 'قراءة القرآن (كل ساعة)', 'name_en': 'Quran Reading (per hour)', 'xp': 100},
+        {'name_ar': 'الجلوس بعد الفجر', 'name_en': 'Sitting after Fajr', 'xp': 40},
+        {'name_ar': 'قيام الليل', 'name_en': 'Night Prayer', 'xp': 60},
+        {'name_ar': 'أذكار الصباح', 'name_en': 'Morning Adhkar', 'xp': 20},
+        {'name_ar': 'أذكار المساء', 'name_en': 'Evening Adhkar', 'xp': 20},
+        {'name_ar': 'البرمجة ساعة', 'name_en': 'Coding (1 hour)', 'xp': 70},
+        {'name_ar': 'قراءة 10 صفحات', 'name_en': 'Reading 10 pages', 'xp': 30},
+        {'name_ar': 'تمرين رياضي', 'name_en': 'Workout', 'xp': 40},
+        {'name_ar': 'أكل صحي', 'name_en': 'Healthy Eating', 'xp': 25},
+        {'name_ar': 'النوم الساعة 11', 'name_en': 'Sleep by 11pm', 'xp': 30},
+    ]
+
     ctx = {
         'profile': profile,
         'achievements': achievement_list,
         'unlocked_count': sum(1 for a in achievement_list if a['unlocked']),
         'total_count': len(achievement_list),
+        'level_map': level_map,
+        'xp_table': xp_table,
         'page': 'achievements',
     }
     return render(request, 'tracker/achievements.html', ctx)

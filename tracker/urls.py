@@ -20,6 +20,9 @@ urlpatterns = [
 
     path('my-system/', views.my_system, name='my_system'),
 
+    # Health check (used by Render)
+    path('health/', views.health_check, name='health_check'),
+
     # API (AJAX)
     path('api/update/', views.api_update, name='api_update'),
     path('api/custom-tasks/', views.api_custom_tasks, name='api_custom_tasks'),

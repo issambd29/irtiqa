@@ -5,6 +5,7 @@ services:
     buildCommand: "./build.sh"
     startCommand: "python manage.py migrate && gunicorn improvement.wsgi:application --workers 2 --threads 2 --timeout 120"
     plan: free
+    healthCheckPath: /health/
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true

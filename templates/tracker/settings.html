@@ -36,10 +36,13 @@
       <div><span class="text-muted">Streak:</span> <strong>🔥 {{ profile.streak_days }}</strong></div>
     </div>
     <div style="margin-top:1.25rem;">
-      <a href="{% url 'logout' %}" class="btn btn-danger btn-full">
-        <span class="label-ar">تسجيل الخروج</span>
-        <span class="label-en" style="display:none">Sign Out</span>
-      </a>
+      <form method="post" action="{% url 'logout' %}" style="margin:0;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-full">
+          <span class="label-ar">تسجيل الخروج</span>
+          <span class="label-en" style="display:none">Sign Out</span>
+        </button>
+      </form>
     </div>
   </div>
 

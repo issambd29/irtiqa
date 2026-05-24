@@ -17,7 +17,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
 ]
 
-# Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,11 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'tracker',
 ]
 
-# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -61,12 +58,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'improvement.wsgi.application'
 
-# Database — uses PostgreSQL on Render, SQLite everywhere else
-IS_RENDER = os.environ.get('RENDER', False)
-if IS_RENDER:
+# ── Database ──────────────────────────────────────────────────────────────────
+# On Render: RENDER=true and DATABASE_URL are both injected at runtime.
+# Locally: falls back to SQLite.
+_DATABASE_URL = os.environ.get('DATABASE_URL', '')
+_IS_RENDER = os.environ.get('RENDER', '') == 'true'
+
+if _IS_RENDER and _DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
+            default=_DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
@@ -79,7 +80,7 @@ else:
         }
     }
 
-# Password validation
+# ── Password validation ───────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -92,7 +93,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files — WhiteNoise serves them in production
+# ── Static files ─────────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -104,7 +105,36 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Security hardening (active when DEBUG=False)
+# ── Logging (stdout so Render captures it) ────────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[{levelname}] {asctime} {name}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
+}
+
+# ── Production security (only when DEBUG=False) ───────────────────────────────
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True

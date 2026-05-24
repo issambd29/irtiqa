@@ -110,11 +110,14 @@
   <!-- Footer -->
   <div class="sidebar-footer">
     <p class="sidebar-footer-quote">إن مع العسر يسرا</p>
-    <a href="{% url 'logout' %}" class="sidebar-logout">
-      <span>↪</span>
-      <span class="label-ar">تسجيل الخروج</span>
-      <span class="label-en" style="display:none">Sign out</span>
-    </a>
+    <form method="post" action="{% url 'logout' %}" style="margin:0;padding:0;">
+      {% csrf_token %}
+      <button type="submit" class="sidebar-logout">
+        <span>↪</span>
+        <span class="label-ar">تسجيل الخروج</span>
+        <span class="label-en" style="display:none">Sign out</span>
+      </button>
+    </form>
   </div>
 
 </aside>

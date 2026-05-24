@@ -3,7 +3,7 @@ services:
     name: alirtiqaa
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn improvement.wsgi:application --workers 2 --threads 2 --timeout 120"
+    startCommand: "python manage.py migrate && gunicorn improvement.wsgi:application --workers 2 --threads 2 --timeout 120"
     plan: free
     envVars:
       - key: DJANGO_SECRET_KEY

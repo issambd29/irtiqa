@@ -34,7 +34,7 @@
     <div class="sys-field">
       <label class="sys-field-label label-ar">اسم القسم</label>
       <label class="sys-field-label label-en" style="display:none">Section Name</label>
-      <input class="sys-input" id="ns-name" placeholder="مثال: الصحة النفسية" autocomplete="off"
+      <input class="sys-input" id="ns-name" placeholder="مثال: الصحة النفسية / e.g. Mental Health" autocomplete="off"
              onkeydown="if(event.key==='Enter')createSection()" />
     </div>
 
@@ -74,7 +74,7 @@
       <div class="sys-field" style="flex:1;">
         <label class="sys-field-label label-ar">اسم العادة</label>
         <label class="sys-field-label label-en" style="display:none">Habit Name</label>
-        <input class="sys-input" id="nh-name" placeholder="مثال: تأمل ١٠ دقائق" autocomplete="off" />
+        <input class="sys-input" id="nh-name" placeholder="مثال: تأمل ١٠ دقائق / e.g. Meditate 10 min" autocomplete="off" />
       </div>
     </div>
 
@@ -118,7 +118,7 @@
       <div class="sys-field" style="flex:1;">
         <label class="sys-field-label label-ar">الوحدة</label>
         <label class="sys-field-label label-en" style="display:none">Unit</label>
-        <input class="sys-input" id="nh-unit" placeholder="دقيقة، مرة، كم..." />
+        <input class="sys-input" id="nh-unit" placeholder="دقيقة، مرة، كم... / min, times, km..." />
       </div>
     </div>
 
@@ -276,12 +276,12 @@
     <p class="sys-suggestions-label label-ar">أفكار للبداية:</p>
     <p class="sys-suggestions-label label-en" style="display:none">Quick start ideas:</p>
     <div class="sys-chips-grid">
-      <button class="chip" onclick="quickSection('🧠','التطوير الذهني')">🧠 التطوير الذهني</button>
-      <button class="chip" onclick="quickSection('💼','مسار العمل')">💼 مسار العمل</button>
-      <button class="chip" onclick="quickSection('🎯','أهداف الأسبوع')">🎯 أهداف الأسبوع</button>
-      <button class="chip" onclick="quickSection('🌱','العادات الصغيرة')">🌱 العادات الصغيرة</button>
-      <button class="chip" onclick="quickSection('📓','اليوميات')">📓 اليوميات</button>
-      <button class="chip" onclick="quickSection('🏃','الحركة')">🏃 الحركة</button>
+      <button class="chip" onclick="quickSection('🧠', IS_AR ? 'التطوير الذهني' : 'Mind Development')">🧠 <span class="label-ar">التطوير الذهني</span><span class="label-en" style="display:none">Mind Development</span></button>
+      <button class="chip" onclick="quickSection('💼', IS_AR ? 'مسار العمل' : 'Work Track')">💼 <span class="label-ar">مسار العمل</span><span class="label-en" style="display:none">Work Track</span></button>
+      <button class="chip" onclick="quickSection('🎯', IS_AR ? 'أهداف الأسبوع' : 'Weekly Goals')">🎯 <span class="label-ar">أهداف الأسبوع</span><span class="label-en" style="display:none">Weekly Goals</span></button>
+      <button class="chip" onclick="quickSection('🌱', IS_AR ? 'العادات الصغيرة' : 'Small Habits')">🌱 <span class="label-ar">العادات الصغيرة</span><span class="label-en" style="display:none">Small Habits</span></button>
+      <button class="chip" onclick="quickSection('📓', IS_AR ? 'اليوميات' : 'Journal')">📓 <span class="label-ar">اليوميات</span><span class="label-en" style="display:none">Journal</span></button>
+      <button class="chip" onclick="quickSection('🏃', IS_AR ? 'الحركة' : 'Movement')">🏃 <span class="label-ar">الحركة</span><span class="label-en" style="display:none">Movement</span></button>
     </div>
   </div>
 </div>

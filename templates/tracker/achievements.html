@@ -40,7 +40,8 @@
         <div class="lvl-you-badge label-ar">← أنت هنا</div>
         <div class="lvl-you-badge label-en" style="display:none">← You are here</div>
         {% endif %}
-        <div class="lvl-name">{{ lvl.name_ar }}</div>
+        <div class="lvl-name label-ar">{{ lvl.name_ar }}</div>
+        <div class="lvl-name label-en" style="display:none">{{ lvl.name_en }}</div>
         <div class="lvl-xp-req">XP {{ lvl.xp_required|floatformat:"0" }}</div>
       </div>
       <div class="lvl-num {% if lvl.current %}active{% elif lvl.reached %}reached{% endif %}">{{ lvl.number }}</div>

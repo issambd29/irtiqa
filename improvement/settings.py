@@ -9,6 +9,12 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.replit.dev',
+    'https://*.replit.app',
+    'https://*.worf.replit.dev',
+]
+
 # Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
